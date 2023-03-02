@@ -1,0 +1,44 @@
+@startuml ScheduledActivities
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "users" {
+  *id : uuid <<PK1, generated>>
+  --
+  *email: string<<PK2>>
+  *password: string
+  remember_me_token: string
+  *created_at : timestamp
+  *updated_at : timestamp
+}
+
+entity "bills" {
+  *id : string <<PK, generated>>
+  --
+  *name: string
+  description: string
+  *due_date: date
+  *user_id: string<<FK>>
+  *created_at : timestamp
+  *updated_at : timestamp
+}
+
+entity "payments" {
+  *id : number <<PK1, generated>>
+  --
+  *bill_id: string<<FK>>
+  description: string
+  value: number
+  *paid_at : datetime
+  *created_at : timestamp
+  *updated_at : timestamp
+}
+
+users ||--o{ bills
+bills ||--o{ payments
+
+@enduml

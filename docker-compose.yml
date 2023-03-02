@@ -1,0 +1,14 @@
+version: "3"
+services:
+  postgresql-server:
+    image: postgres:12
+    volumes:
+        - ./docker:/docker-entrypoint-initdb.d
+    container_name: daily-helper-api-dev-postgres
+    hostname: postgres-server
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="daily-helper-api-db-dev","daily-helper-api-db-test"
+      - POSTGRES_PASSWORD=ad3225ca3430a25e1e2a8bb6d97efa79
+      - POSTGRES_USER=lucid
