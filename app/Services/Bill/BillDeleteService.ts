@@ -1,10 +1,10 @@
-import { RequestContract } from "@ioc:Adonis/Core/Request";
+import { rules, schema } from "@ioc:Adonis/Core/Validator";
 import Bill from "App/Models/Bill";
-import BillDeleteValidator from "App/Validators/Bills/BillDeleteValidator";
-import BaseService from "../BaseService";
+import { ValidatorHelper } from "App/Utils/ValidatorHelper";
+import IBaseService from "../IBaseService";
 
-export default class BillDeleteService implements BaseService<Input, Output> {
-  public async execute({ billId, userId }: Input): Promise<Output> {
+export default class BillDeleteService implements IBaseService<Input, Output> {
+  public async execute({ params: { billId }, userId }: Input): Promise<Output> {
     const bill = await Bill.query()
       .where("userId", userId)
       .andWhere("billId", billId)
@@ -17,14 +17,19 @@ export default class BillDeleteService implements BaseService<Input, Output> {
     await bill.delete();
   }
 
-  public async validate(request: RequestContract): Promise<Input> {
-    return await request.validate(BillDeleteValidator);
-  }
+  public schemaValidator = {
+    schema: schema.create({
+      params: schema
+        .object()
+        .members({ billId: schema.string({}, [rules.uuid({ version: 4 })]) }),
+    }),
+    messages: ValidatorHelper.getDefaultValidatorMessages,
+  };
 }
 
 type Input = {
   userId: string;
-  billId: string;
+  params: { billId: string };
 };
 
 type Output = void;

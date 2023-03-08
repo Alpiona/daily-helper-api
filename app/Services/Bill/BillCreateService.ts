@@ -1,8 +1,9 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 import Bill from "App/Models/Bill";
-import BaseService from "../BaseService";
+import { ValidatorHelper } from "App/Utils/ValidatorHelper";
+import IBaseService from "../IBaseService";
 
-export default class BillCreateService implements BaseService<Input, Output> {
+export default class BillCreateService implements IBaseService<Input, Output> {
   public async execute(input: Input): Promise<Output> {
     const bill = await Bill.create(input);
 
@@ -15,6 +16,7 @@ export default class BillCreateService implements BaseService<Input, Output> {
       description: schema.string.optional({}, [rules.minLength(3)]),
       dueDay: schema.number.optional([rules.range(1, 31)]),
     }),
+    messages: ValidatorHelper.getDefaultValidatorMessages,
   };
 }
 

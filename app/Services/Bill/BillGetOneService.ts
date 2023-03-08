@@ -1,8 +1,9 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 import Bill from "App/Models/Bill";
-import BaseService from "../BaseService";
+import { ValidatorHelper } from "App/Utils/ValidatorHelper";
+import IBaseService from "../IBaseService";
 
-export default class BillGetOneService implements BaseService<Input, Output> {
+export default class BillGetOneService implements IBaseService<Input, Output> {
   public async execute({ userId, params: { billId } }: Input): Promise<Output> {
     const bill = await Bill.query()
       .where("userId", userId)
@@ -18,6 +19,10 @@ export default class BillGetOneService implements BaseService<Input, Output> {
         .object()
         .members({ billId: schema.string({}, [rules.uuid({ version: 4 })]) }),
     }),
+    messages: {
+      ...ValidatorHelper.getDefaultValidatorMessages,
+      "params.billId.uuid": "The bill ID need to be UUID type",
+    },
   };
 }
 

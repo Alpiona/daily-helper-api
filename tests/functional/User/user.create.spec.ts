@@ -43,13 +43,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "email",
-          message: "email validation failed",
-          rule: "email",
-        },
-      ],
+      errors: [{ message: "The 'email' is in an invalid pattern" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -64,13 +58,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "email",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'email' is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -87,9 +75,9 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      detail: `Key (email)=(${user.email}) already exists.`,
+      errors: [{ message: "Email already in use" }],
     });
-    apiReturn.assertStatus(400);
+    apiReturn.assertStatus(409);
   });
 
   test("should return error if email is not send", async ({ client }) => {
@@ -101,13 +89,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "email",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'email' is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -122,13 +104,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "password",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'password' is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -142,13 +118,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "password",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'password' is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -165,13 +135,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "passwordConfirmation",
-          message: "confirmed validation failed",
-          rule: "confirmed",
-        },
-      ],
+      errors: [{ message: "The 'passwordConfirmation' is incorrect" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -187,13 +151,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [
-        {
-          field: "passwordConfirmation",
-          message: "confirmed validation failed",
-          rule: "confirmed",
-        },
-      ],
+      errors: [{ message: "The 'passwordConfirmation' is incorrect" }],
     });
     apiReturn.assertStatus(422);
   });

@@ -1,8 +1,9 @@
 import { schema } from "@ioc:Adonis/Core/Validator";
 import Bill from "App/Models/Bill";
-import BaseService from "../BaseService";
+import { ValidatorHelper } from "App/Utils/ValidatorHelper";
+import IBaseService from "../IBaseService";
 
-export default class BillGetListService implements BaseService<Input, Output> {
+export default class BillGetListService implements IBaseService<Input, Output> {
   public async execute({
     userId,
     orderBy = "name",
@@ -10,8 +11,7 @@ export default class BillGetListService implements BaseService<Input, Output> {
   }: Input): Promise<Output> {
     const bills = await Bill.query()
       .where("userId", userId)
-      .orderBy(orderBy, orderByDirection as "asc" | "desc")
-      .exec();
+      .orderBy(orderBy, orderByDirection as "asc" | "desc");
 
     return bills;
   }
@@ -21,6 +21,7 @@ export default class BillGetListService implements BaseService<Input, Output> {
       orderBy: schema.enum.optional(["name", "dueDay"]),
       orderByDirection: schema.enum.optional(["asc", "desc"]),
     }),
+    messages: ValidatorHelper.getDefaultValidatorMessages,
   };
 }
 

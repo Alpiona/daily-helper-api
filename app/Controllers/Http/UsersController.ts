@@ -25,7 +25,9 @@ export default class UsersController {
       return response.created();
     } catch (err) {
       if (err.constraint === "users_email_unique") {
-        return response.unprocessableEntity("Email already in use");
+        return response.conflict({
+          errors: [{ message: "Email already in use" }],
+        });
       }
 
       return response.abort(err);

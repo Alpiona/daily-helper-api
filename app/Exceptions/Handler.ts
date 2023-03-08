@@ -19,6 +19,13 @@ export default class ExceptionHandler extends HttpExceptionHandler {
         return ctx.response.unauthorized({
           errors: [{ message: "Access unauthorized" }],
         });
+
+      case "E_VALIDATION_FAILURE":
+        return ctx.response.unprocessableEntity({
+          errors: error.messages.errors.map((error) => ({
+            message: error.message,
+          })),
+        });
     }
 
     return super.handle(error, ctx);

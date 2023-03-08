@@ -114,13 +114,7 @@ test.group("Bills - Create (Failure) ", (group) => {
 
     response.assertStatus(422);
     response.assertBodyContains({
-      errors: [
-        {
-          rule: "required",
-          message: "required validation failed",
-          field: "name",
-        },
-      ],
+      errors: [{ message: "The 'name' is required" }],
     });
   });
 });

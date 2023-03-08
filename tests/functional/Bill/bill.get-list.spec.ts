@@ -140,12 +140,7 @@ test.group("Bills - Get List (Failure)", (group) => {
     response.assertStatus(422);
     response.assertBodyContains({
       errors: [
-        {
-          rule: "enum",
-          field: "orderBy",
-          message: "enum validation failed",
-          args: { choices: ["name", "dueDay"] },
-        },
+        { message: "The 'orderBy' only accepts the values [name,dueDay]" },
       ],
     });
   });
@@ -165,10 +160,7 @@ test.group("Bills - Get List (Failure)", (group) => {
     response.assertBodyContains({
       errors: [
         {
-          rule: "enum",
-          field: "orderByDirection",
-          message: "enum validation failed",
-          args: { choices: ["asc", "desc"] },
+          message: "The 'orderByDirection' only accepts the values [asc,desc]",
         },
       ],
     });

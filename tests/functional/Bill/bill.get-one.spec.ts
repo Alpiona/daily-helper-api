@@ -80,4 +80,18 @@ test.group("Bills - Get One (Failure) ", (group) => {
       errors: [{ message: "Access unauthorized" }],
     });
   });
+
+  test("should return validator error if billId is not UUID", async ({
+    client,
+    route,
+  }) => {
+    const response = await client
+      .get(route("BillsController.getOne", { billId: 123456 }))
+      .loginAs(user);
+
+    response.assertStatus(422);
+    response.assertBodyContains({
+      errors: [{ message: "The bill ID need to be UUID type" }],
+    });
+  });
 });

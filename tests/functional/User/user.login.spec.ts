@@ -19,15 +19,15 @@ const setupGroupHooks = (group: Group) => {
 test.group("Users - Login (Success) ", (group) => {
   setupGroupHooks(group);
   test("should authenticate a user", async ({ client, route }) => {
-    const apiReturn = await client
+    const response = await client
       .post(route("UsersController.login"))
       .json({ email: user.email, password });
 
-    apiReturn.assertBodyContains({
+    response.assertBodyContains({
       email: user.email,
-      token: apiReturn.response.body.token,
+      token: response.response.body.token,
     });
-    apiReturn.assertStatus(200);
+    response.assertStatus(200);
   });
 });
 
@@ -35,12 +35,21 @@ test.group("Users - Login (Failed) ", (group) => {
   setupGroupHooks(group);
 
   test("should return error if email is wrong", async ({ client }) => {
-    const apiReturn = await client
+    const response = await client
       .post("/users/login")
       .json({ email: "user@email.com", password });
 
-    apiReturn.assertTextIncludes("Invalid credentials");
-    apiReturn.assertStatus(401);
+    response.assertTextIncludes("Invalid credentials");
+    response.assertStatus(401);
+  });
+
+  test("should return error if email is invalid format", async ({ client }) => {
+    const response = await client
+      .post("/users/login")
+      .json({ email: "email.com", password });
+
+    response.assertTextIncludes("The 'email' is in an invalid pattern");
+    response.assertStatus(422);
   });
 
   test("should return error if email is null", async ({ client }) => {
@@ -49,13 +58,7 @@ test.group("Users - Login (Failed) ", (group) => {
       .json({ email: null, password });
 
     response.assertBodyContains({
-      errors: [
-        {
-          field: "email",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'email' is required" }],
     });
     response.assertStatus(422);
   });
@@ -64,24 +67,18 @@ test.group("Users - Login (Failed) ", (group) => {
     const response = await client.post("/users/login").json({ password });
 
     response.assertBodyContains({
-      errors: [
-        {
-          field: "email",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'email' is required" }],
     });
     response.assertStatus(422);
   });
 
   test("should return error if password is wrong", async ({ client }) => {
-    const apiReturn = await client
+    const response = await client
       .post("/users/login")
       .json({ email: user.email, password: "password" });
 
-    apiReturn.assertTextIncludes("Invalid credentials");
-    apiReturn.assertStatus(401);
+    response.assertTextIncludes("Invalid credentials");
+    response.assertStatus(401);
   });
 
   test("should return error if password is null", async ({ client }) => {
@@ -90,13 +87,7 @@ test.group("Users - Login (Failed) ", (group) => {
       .json({ email: user.email, password: null });
 
     response.assertBodyContains({
-      errors: [
-        {
-          field: "password",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'password' is required" }],
     });
     response.assertStatus(422);
   });
@@ -107,13 +98,7 @@ test.group("Users - Login (Failed) ", (group) => {
       .json({ email: user.email });
 
     response.assertBodyContains({
-      errors: [
-        {
-          field: "password",
-          message: "required validation failed",
-          rule: "required",
-        },
-      ],
+      errors: [{ message: "The 'password' is required" }],
     });
     response.assertStatus(422);
   });
