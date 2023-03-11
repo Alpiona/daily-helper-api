@@ -43,7 +43,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'email' is in an invalid pattern" }],
+      errors: [{ message: "The email is in an invalid pattern" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -58,7 +58,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'email' is required" }],
+      errors: [{ message: "The email is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -89,7 +89,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'email' is required" }],
+      errors: [{ message: "The email is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -104,7 +104,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'password' is required" }],
+      errors: [{ message: "The password is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -118,7 +118,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'password' is required" }],
+      errors: [{ message: "The password is required" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -135,7 +135,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'passwordConfirmation' is incorrect" }],
+      errors: [{ message: "The passwordConfirmation is incorrect" }],
     });
     apiReturn.assertStatus(422);
   });
@@ -151,7 +151,7 @@ test.group("Users - Create (Failed) ", (group) => {
     const apiReturn = await client.post(endpointUrl).json(body);
 
     apiReturn.assertBodyContains({
-      errors: [{ message: "The 'passwordConfirmation' is incorrect" }],
+      errors: [{ message: "The passwordConfirmation is incorrect" }],
     });
     apiReturn.assertStatus(422);
   });

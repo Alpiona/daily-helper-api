@@ -8,11 +8,19 @@ export default class UsersController {
     const { email, password } = await request.validate(UserLoginValidator);
 
     try {
-      const token = await auth.use("api").attempt(email, password);
+      const token = await auth
+        .use("api")
+        .attempt(email, password, { expiresIn: "1 day" });
 
-      return response.ok({ email, token: token.token });
+      return response.ok({
+        email,
+        token: token.token,
+        expiresAt: token.expiresAt,
+      });
     } catch {
-      return response.unauthorized("Invalid credentials");
+      return response.unauthorized({
+        errors: [{ message: "Invalid credentials" }],
+      });
     }
   }
 
