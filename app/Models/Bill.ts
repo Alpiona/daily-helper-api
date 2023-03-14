@@ -1,8 +1,22 @@
-import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  HasMany,
+  hasMany,
+} from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
+import Payment from "./Payment";
 import User from "./User";
 
 export default class Bill extends BaseModel {
+  public serializeExtras() {
+    return {
+      month_paid: !!this.$extras.month_paid,
+    };
+  }
+
   @column({ isPrimary: true })
   public id: string;
 
@@ -20,6 +34,9 @@ export default class Bill extends BaseModel {
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>;
+
+  @hasMany(() => Payment)
+  public payments: HasMany<typeof Payment>;
 
   @column.dateTime({ autoCreate: true, serializeAs: null })
   public createdAt: DateTime;

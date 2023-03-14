@@ -13,9 +13,11 @@ export default class UsersController {
         .attempt(email, password, { expiresIn: "1 day" });
 
       return response.ok({
-        email,
-        token: token.token,
-        expiresAt: token.expiresAt,
+        data: {
+          email,
+          token: token.token,
+          expiresAt: token.expiresAt,
+        },
       });
     } catch {
       return response.unauthorized({

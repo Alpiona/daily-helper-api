@@ -1,5 +1,6 @@
-import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
+import Bill from "./Bill";
 
 export default class Payment extends BaseModel {
   @column({ isPrimary: true })
@@ -8,13 +9,16 @@ export default class Payment extends BaseModel {
   @column()
   public billId: string;
 
+  @belongsTo(() => Bill)
+  public bill: BelongsTo<typeof Bill>;
+
   @column()
   public description: string | null;
 
   @column()
   public value: number | null;
 
-  @column()
+  @column.dateTime()
   public referenceDate: DateTime;
 
   @column.dateTime()

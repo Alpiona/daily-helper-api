@@ -1,5 +1,7 @@
 import Factory from "@ioc:Adonis/Lucid/Factory";
 import Bill from "App/Models/Bill";
+import PaymentFactory from "./PaymentFactory";
+import UserFactory from "./UserFactory";
 
 export default Factory.define(Bill, ({ faker }) => {
   return {
@@ -7,4 +9,7 @@ export default Factory.define(Bill, ({ faker }) => {
     dueDay: faker.datatype.number({ min: 1, max: 28 }),
     description: faker.lorem.words(5),
   };
-}).build();
+})
+  .relation("user", () => UserFactory)
+  .relation("payments", () => PaymentFactory)
+  .build();
