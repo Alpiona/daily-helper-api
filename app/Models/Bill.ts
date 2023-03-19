@@ -1,5 +1,4 @@
 import {
-  BaseModel,
   BelongsTo,
   belongsTo,
   column,
@@ -7,10 +6,11 @@ import {
   hasMany,
 } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
+import AppBaseModel from "./AppBaseModel";
 import Payment from "./Payment";
 import User from "./User";
 
-export default class Bill extends BaseModel {
+export default class Bill extends AppBaseModel {
   public serializeExtras() {
     return {
       month_paid: !!this.$extras.month_paid,

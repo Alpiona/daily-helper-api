@@ -1,8 +1,9 @@
-import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import { BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
 import { DateTime } from "luxon";
+import AppBaseModel from "./AppBaseModel";
 import Bill from "./Bill";
 
-export default class Payment extends BaseModel {
+export default class Payment extends AppBaseModel {
   @column({ isPrimary: true })
   public id: string;
 

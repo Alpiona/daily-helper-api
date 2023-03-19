@@ -12,7 +12,7 @@ export default class BillController {
 
     const output = await service.execute({ ...input, userId: auth.user!.id });
 
-    return response.created(output);
+    return response.created({ data: output });
   }
 
   public async update({ request, response, auth }: HttpContextContract) {
