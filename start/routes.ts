@@ -20,6 +20,7 @@
 
 import Route from "@ioc:Adonis/Core/Route";
 import "./routes/billRoutes";
+import "./routes/paymentRoutes";
 import "./routes/userRoutes";
 
 Route.get("/", async () => {

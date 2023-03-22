@@ -16,7 +16,6 @@ export default class PaymentCreateService
   public schemaValidator = {
     schema: schema.create({
       billId: schema.string({}, [rules.uuid({ version: 4 })]),
-      description: schema.string.optional({}, [rules.minLength(3)]),
       paidAt: schema.date.optional(),
       referenceDate: schema.date(),
       value: schema.number.optional(),
@@ -27,7 +26,6 @@ export default class PaymentCreateService
 
 type Input = {
   billId: string;
-  description?: string;
   paidAt?: DateTime;
   referenceDate: DateTime;
   value?: number;

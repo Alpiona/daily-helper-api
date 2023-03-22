@@ -22,7 +22,7 @@ export default class BillController {
 
     await service.execute({ ...input, userId: auth.user!.id });
 
-    return response;
+    return response.noContent();
   }
 
   public async getOne({ request, response, auth }: HttpContextContract) {
