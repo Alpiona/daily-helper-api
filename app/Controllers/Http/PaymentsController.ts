@@ -11,9 +11,9 @@ export default class PaymentController {
 
     const input = await request.validate(service.schemaValidator);
 
-    const output = await service.execute({ ...input, userId: auth.user!.id });
+    const output = await service.execute(input, auth.user!.id);
 
-    return response.created(output);
+    return response.created({ data: output });
   }
 
   public async update({ request, response, auth }: HttpContextContract) {
@@ -41,7 +41,7 @@ export default class PaymentController {
 
     const input = await request.validate(service.schemaValidator);
 
-    const output = await service.execute({ ...input, userId: auth.user!.id });
+    const output = await service.execute(input, auth.user!.id);
 
     return response.ok({ data: output });
   }
