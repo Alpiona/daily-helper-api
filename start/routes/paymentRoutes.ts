@@ -7,7 +7,7 @@ Route.group(() => {
 
   Route.post("/payments", "PaymentsController.create");
 
-  Route.delete("/payments/:paymentId", "PaymentsController.delete");
+  Route.delete("/payments/:paymentId", "PaymentsController.deleteOne");
 
   Route.put("/payments/:paymentId", "PaymentsController.update");
 }).middleware("auth");

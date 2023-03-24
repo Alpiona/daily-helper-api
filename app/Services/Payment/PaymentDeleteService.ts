@@ -10,10 +10,7 @@ export default class PaymentDeleteService
     params: { paymentId },
     userId,
   }: Input): Promise<Output> {
-    const payment = await Payment.query()
-      .where("userId", userId)
-      .andWhere("paymentId", paymentId)
-      .first();
+    const payment = await Payment.find(paymentId);
 
     if (!payment) {
       throw new Error("Not found");
