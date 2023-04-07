@@ -6,10 +6,11 @@ import IBaseService from "../IBaseService";
 export default class PaymentGetListService
   implements IBaseService<Input, Output>
 {
-  public async execute(
-    { billId, orderBy = "referenceDate", orderByDirection = "desc" }: Input,
-    userId
-  ): Promise<Output> {
+  public async execute({
+    billId,
+    orderBy = "referenceDate",
+    orderByDirection = "desc",
+  }: Input): Promise<Output> {
     const payments = await Payment.query()
       .where("billId", billId)
       .orderBy(orderBy, orderByDirection as "asc" | "desc");

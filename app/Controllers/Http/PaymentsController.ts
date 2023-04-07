@@ -36,12 +36,12 @@ export default class PaymentController {
     return response.ok({ data: output });
   }
 
-  public async getList({ request, response, auth }: HttpContextContract) {
+  public async getList({ request, response }: HttpContextContract) {
     const service = new PaymentGetListService();
 
     const input = await request.validate(service.schemaValidator);
 
-    const output = await service.execute(input, auth.user!.id);
+    const output = await service.execute(input);
 
     return response.ok({ data: output });
   }

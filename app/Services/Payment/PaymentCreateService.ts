@@ -7,7 +7,7 @@ import IBaseService from "../IBaseService";
 export default class PaymentCreateService
   implements IBaseService<Input, Output>
 {
-  public async execute(input: Input, userId: string): Promise<Output> {
+  public async execute(input: Input, _userId: string): Promise<Output> {
     const payment = await Payment.create(input);
 
     return payment;

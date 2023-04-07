@@ -8,7 +8,7 @@ export default class PaymentDeleteService
 {
   public async execute({
     params: { paymentId },
-    userId,
+    userId: _userId,
   }: Input): Promise<Output> {
     const payment = await Payment.find(paymentId);
 
