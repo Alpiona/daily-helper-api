@@ -15,7 +15,5 @@ phases:
 
 artifacts:
   files:
-    - package.json
-    - package-lock.json
-    - 'build/**/*'
-  discard-paths: yes
+    - '**/*'
+  base-directory: build
