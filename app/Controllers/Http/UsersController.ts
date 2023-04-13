@@ -1,23 +1,21 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import User from "App/Models/User";
-import UserCreateValidator from "App/Validators/Users/UserCreateValidator";
-import UserLoginValidator from "App/Validators/Users/UserLoginValidator";
+import UserActiveService from "App/Services/User/UserActiveService";
+import UserCreateService from "App/Services/User/UserCreateService";
+import UserLoginService from "App/Services/User/UserLoginService";
+import UserResetPasswordService from "App/Services/User/UserResetPasswordService";
+import UserSendResetPasswordEmailService from "App/Services/User/UserSendResetPasswordEmailService";
 
 export default class UsersController {
   public async login({ request, response, auth }: HttpContextContract) {
-    const { email, password } = await request.validate(UserLoginValidator);
+    const service = new UserLoginService();
+
+    const input = await request.validate(service.schemaValidator);
 
     try {
-      const token = await auth
-        .use("api")
-        .attempt(email, password, { expiresIn: "1 day" });
+      const output = await service.execute({ ...input, auth });
 
       return response.ok({
-        data: {
-          email,
-          token: token.token,
-          expiresAt: token.expiresAt,
-        },
+        data: output,
       });
     } catch {
       return response.unauthorized({
@@ -27,10 +25,12 @@ export default class UsersController {
   }
 
   public async create({ request, response }: HttpContextContract) {
-    const { email, password } = await request.validate(UserCreateValidator);
+    const service = new UserCreateService();
+
+    const input = await request.validate(service.schemaValidator);
 
     try {
-      await User.create({ email, password });
+      await service.execute(input);
 
       return response.created();
     } catch (err) {
@@ -39,8 +39,40 @@ export default class UsersController {
           errors: [{ message: "Email already in use" }],
         });
       }
-
-      return response.abort(err);
     }
+  }
+
+  public async active({ response, auth }: HttpContextContract) {
+    const service = new UserActiveService();
+
+    const user = auth.user;
+
+    await service.execute({ userId: user!.id });
+
+    return response.noContent();
+  }
+
+  public async sendResetPasswordEmail({
+    request,
+    response,
+    auth,
+  }: HttpContextContract) {
+    const service = new UserSendResetPasswordEmailService();
+
+    const input = await request.validate(service.schemaValidator);
+
+    await service.execute({ ...input, auth });
+
+    return response.noContent();
+  }
+
+  public async resetPassword({ request, response, auth }: HttpContextContract) {
+    const service = new UserResetPasswordService();
+
+    const input = await request.validate(service.schemaValidator);
+
+    await service.execute({ ...input, auth });
+
+    return response.noContent();
   }
 }

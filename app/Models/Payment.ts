@@ -14,9 +14,6 @@ export default class Payment extends AppBaseModel {
   public bill: BelongsTo<typeof Bill>;
 
   @column()
-  public description: string | null;
-
-  @column()
   public value: number | null;
 
   @column.dateTime()
@@ -31,12 +28,11 @@ export default class Payment extends AppBaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  public async update({ description, referenceDate, paidAt, value }) {
+  public async update({ referenceDate, paidAt, value }) {
     if (!referenceDate) {
       throw new Error("One or more necessary params are empty");
     }
 
-    this.description = description;
     this.referenceDate = referenceDate;
     this.paidAt = paidAt;
     this.value = value;

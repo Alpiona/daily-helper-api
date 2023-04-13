@@ -7,7 +7,7 @@ hide circle
 skinparam linetype ortho
 
 entity "users" {
-  *id : uuid <<PK1, generated>>
+  *id: uuid <<PK1, generated>>
   --
   *email: string<<PK2>>
   *password: string
@@ -17,23 +17,23 @@ entity "users" {
 }
 
 entity "bills" {
-  *id : string <<PK, generated>>
+  *id: string <<PK, generated>>
   --
   *name: string
   description: string
-  *due_date: date
+  *due_day: number
   *user_id: string<<FK>>
   *created_at : timestamp
   *updated_at : timestamp
 }
 
 entity "payments" {
-  *id : number <<PK1, generated>>
+  *id: number <<PK1, generated>>
   --
-  *bill_id: string<<FK>>
-  description: string
+  *bill_id: string<<PK2, FK>>
   value: number
-  *paid_at : datetime
+  *reference_date: datetime<<PK2>>
+  paid_at : datetime
   *created_at : timestamp
   *updated_at : timestamp
 }

@@ -11,6 +11,7 @@ export default class extends BaseSchema {
         .defaultTo(this.db.knexRawQuery("uuid_generate_v4()"));
       table.string("email", 255).notNullable().unique();
       table.string("password", 180).notNullable();
+      table.integer("status").notNullable().defaultTo(1);
       table.string("remember_me_token").nullable();
 
       /**

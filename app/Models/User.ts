@@ -16,6 +16,9 @@ export default class User extends AppBaseModel {
   @column()
   public rememberMeToken: string | null;
 
+  @column()
+  public status: number;
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;
 

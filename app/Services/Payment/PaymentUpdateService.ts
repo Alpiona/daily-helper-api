@@ -8,20 +8,18 @@ export default class PaymentUpdateService
   implements IBaseService<Input, Output>
 {
   public async execute({
-    description,
     paidAt,
     referenceDate,
     value,
     params: { paymentId },
   }: Input): Promise<Output> {
-    const payment = await Payment.query().where("id", paymentId).firstOrFail();
+    const payment = await Payment.findOrFail(paymentId);
 
-    await payment.update({ description, paidAt, referenceDate, value });
+    await payment.update({ paidAt, referenceDate, value });
   }
 
   public schemaValidator = {
     schema: schema.create({
-      description: schema.string.optional({}, [rules.minLength(3)]),
       paidAt: schema.date.optional(),
       referenceDate: schema.date(),
       value: schema.number.optional(),
@@ -34,7 +32,6 @@ export default class PaymentUpdateService
 }
 
 type Input = {
-  description?: string;
   paidAt?: DateTime;
   referenceDate: DateTime;
   value?: number;
