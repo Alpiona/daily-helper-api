@@ -1,6 +1,6 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import Payment from "App/Models/Payment";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import { DateTime } from "luxon";
 import IBaseService from "../IBaseService";
 
@@ -20,7 +20,7 @@ export default class PaymentCreateService
       referenceDate: schema.date(),
       value: schema.number.optional(),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

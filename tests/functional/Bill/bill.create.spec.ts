@@ -16,6 +16,8 @@ const setupGroupHooks = (group) => {
 
     return () => Database.rollbackGlobalTransaction();
   });
+
+  group.tap((test) => test.tags(["bill", "create"]));
 };
 
 test.group("Bills - Create (Success) ", (group) => {

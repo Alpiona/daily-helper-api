@@ -1,11 +1,18 @@
+import { Exception } from "@adonisjs/core/build/standalone";
+import { AuthContract } from "@ioc:Adonis/Addons/Auth";
+import Mail from "@ioc:Adonis/Addons/Mail";
+import Env from "@ioc:Adonis/Core/Env";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import View from "@ioc:Adonis/Core/View";
+import { ConfigurationValues } from "App/Constants/ConfigurationValues";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import { UserStatus } from "App/Constants/UserStatus";
 import User from "App/Models/User";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
+import mjml from "mjml";
 import IBaseService from "../IBaseService";
 
 export default class UserCreateService implements IBaseService<Input, Output> {
-  public async execute({ email, password }: Input): Promise<Output> {
+  public async execute({ email, password, auth }: Input): Promise<Output> {
     try {
       await User.create({
         email,
@@ -14,9 +21,31 @@ export default class UserCreateService implements IBaseService<Input, Output> {
       });
     } catch (err) {
       if (err.constraint === "users_email_unique") {
-        throw new Error("Email already in use");
+        throw new Exception("Email already in use", 409);
       }
     }
+
+    const token = await auth.use("api").attempt(email, password, {
+      expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
+    });
+
+    const confirmationUrl = `${Env.get(
+      "ORGANEZEE_URL"
+    )}/auth/sign-up-confirmation?token=${token.token}`;
+
+    const view = await View.render("emails/reset_password.edge", {
+      confirmationUrl,
+    });
+
+    const html = mjml(view).html;
+
+    await Mail.sendLater((message) => {
+      message
+        .from(Env.get("ORGANEZEE_NO_REPLY_EMAIL"))
+        .to(email)
+        .subject("Reset Password!")
+        .html(html);
+    });
   }
 
   public schemaValidator = {
@@ -27,13 +56,14 @@ export default class UserCreateService implements IBaseService<Input, Output> {
         rules.confirmed("passwordConfirmation"),
       ]),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 
 type Input = {
   email: string;
   password: string;
+  auth: AuthContract;
 };
 
 type Output = void;

@@ -12,7 +12,7 @@ export default class BillController {
 
     const output = await service.execute({ ...input, userId: auth.user!.id });
 
-    return response.created({ data: output });
+    return response.created({ data: output, errors: [] });
   }
 
   public async update({ request, response, auth }: HttpContextContract) {
@@ -22,7 +22,7 @@ export default class BillController {
 
     await service.execute({ ...input, userId: auth.user!.id });
 
-    return response.noContent();
+    return response.ok({ data: {}, errors: [] });
   }
 
   public async getOne({ request, response, auth }: HttpContextContract) {
@@ -32,7 +32,7 @@ export default class BillController {
 
     const output = await service.execute({ ...input, userId: auth.user!.id });
 
-    return response.ok({ data: output });
+    return response.ok({ data: output, errors: [] });
   }
 
   public async getList({ request, response, auth }: HttpContextContract) {
@@ -42,6 +42,6 @@ export default class BillController {
 
     const output = await service.execute({ ...input, userId: auth.user!.id });
 
-    return response.ok({ data: output });
+    return response.ok({ data: output, errors: [] });
   }
 }

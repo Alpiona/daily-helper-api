@@ -4,8 +4,8 @@ import Env from "@ioc:Adonis/Core/Env";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
 import View from "@ioc:Adonis/Core/View";
 import { ConfigurationValues } from "App/Constants/ConfigurationValues";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import User from "App/Models/User";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import mjml from "mjml";
 import IBaseService from "../IBaseService";
 
@@ -15,11 +15,9 @@ export default class UserSendResetPasswordEmailService
   public async execute({ email, auth }: Input): Promise<Output> {
     const { password } = await User.findByOrFail("email", email);
 
-    const token = await auth
-      .use("api")
-      .attempt(email, password, {
-        expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
-      });
+    const token = await auth.use("api").attempt(email, password, {
+      expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
+    });
 
     const url = `${Env.get(
       "ORGANEZEE_URL"
@@ -40,7 +38,7 @@ export default class UserSendResetPasswordEmailService
     schema: schema.create({
       email: schema.string({}, [rules.email()]),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

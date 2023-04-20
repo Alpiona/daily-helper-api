@@ -1,6 +1,6 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import Payment from "App/Models/Payment";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import IBaseService from "../IBaseService";
 
 export default class PaymentGetOneService
@@ -25,7 +25,7 @@ export default class PaymentGetOneService
       }),
     }),
     messages: {
-      ...ValidatorHelper.getDefaultValidatorMessages,
+      ...DefaultValidatorMessages,
       "params.paymentId.uuid": "The payment ID need to be UUID type",
     },
   };

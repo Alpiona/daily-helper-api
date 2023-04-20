@@ -1,6 +1,6 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import Bill from "App/Models/Bill";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import IBaseService from "../IBaseService";
 
 export default class BillUpdateService implements IBaseService<Input, Output> {
@@ -28,7 +28,7 @@ export default class BillUpdateService implements IBaseService<Input, Output> {
         .object()
         .members({ billId: schema.string({}, [rules.uuid({ version: 4 })]) }),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

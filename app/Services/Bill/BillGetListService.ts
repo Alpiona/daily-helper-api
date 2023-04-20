@@ -1,7 +1,7 @@
 import { schema } from "@ioc:Adonis/Core/Validator";
 import Database from "@ioc:Adonis/Lucid/Database";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import Bill from "App/Models/Bill";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import { DateTime } from "luxon";
 import IBaseService from "../IBaseService";
 
@@ -38,7 +38,7 @@ export default class BillGetListService implements IBaseService<Input, Output> {
       orderBy: schema.enum.optional(["name", "dueDay"]),
       orderByDirection: schema.enum.optional(["asc", "desc"]),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

@@ -1,6 +1,6 @@
 import { AuthContract } from "@ioc:Adonis/Addons/Auth";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import IBaseService from "../IBaseService";
 
 export default class UserResetPasswordService
@@ -24,7 +24,7 @@ export default class UserResetPasswordService
         rules.confirmed("passwordConfirmation"),
       ]),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

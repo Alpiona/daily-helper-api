@@ -1,6 +1,6 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import Bill from "App/Models/Bill";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import IBaseService from "../IBaseService";
 
 export default class BillCreateService implements IBaseService<Input, Output> {
@@ -16,7 +16,7 @@ export default class BillCreateService implements IBaseService<Input, Output> {
       description: schema.string.optional({}, [rules.minLength(3)]),
       dueDay: schema.number.optional([rules.range(1, 31)]),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

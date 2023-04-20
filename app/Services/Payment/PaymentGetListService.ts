@@ -1,6 +1,6 @@
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
 import Payment from "App/Models/Payment";
-import { ValidatorHelper } from "App/Utils/ValidatorHelper";
 import IBaseService from "../IBaseService";
 
 export default class PaymentGetListService
@@ -24,7 +24,7 @@ export default class PaymentGetListService
       orderByDirection: schema.enum.optional(["asc", "desc"]),
       billId: schema.string({}, [rules.uuid({ version: 4 })]),
     }),
-    messages: ValidatorHelper.getDefaultValidatorMessages,
+    messages: DefaultValidatorMessages,
   };
 }
 

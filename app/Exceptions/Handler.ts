@@ -1,7 +1,7 @@
 import { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-
 import HttpExceptionHandler from "@ioc:Adonis/Core/HttpExceptionHandler";
 import Logger from "@ioc:Adonis/Core/Logger";
+import { ErrorCodesHandler } from "App/Constants/ErrorCodeHandler";
 
 export default class ExceptionHandler extends HttpExceptionHandler {
   constructor() {
@@ -9,25 +9,21 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public async handle(error: any, ctx: HttpContextContract) {
-    switch (error.code) {
-      case "E_ROW_NOT_FOUND":
-        return ctx.response.notFound({
-          errors: [{ message: "Resource not found" }],
-        });
-
-      case "E_UNAUTHORIZED_ACCESS":
-        return ctx.response.unauthorized({
-          errors: [{ message: "Access unauthorized" }],
-        });
-
-      case "E_VALIDATION_FAILURE":
-        return ctx.response.unprocessableEntity({
-          errors: error.messages.errors.map((error) => ({
-            message: error.message,
-          })),
-        });
+    if (error.code && error.code in ErrorCodesHandler) {
+      return ErrorCodesHandler[error.code](ctx, error);
     }
 
-    return super.handle(error, ctx);
+    if (error.name === "Exception") {
+      return ctx.response
+        .status(error.status)
+        .send({ data: {}, errors: [{ message: error.message }] });
+    }
+
+    return ctx.response.status(500).send({
+      data: {},
+      errors: [
+        { message: "Sorry! Internal server error! Please try again later." },
+      ],
+    });
   }
 }

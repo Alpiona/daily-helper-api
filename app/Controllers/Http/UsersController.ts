@@ -11,35 +11,22 @@ export default class UsersController {
 
     const input = await request.validate(service.schemaValidator);
 
-    try {
-      const output = await service.execute({ ...input, auth });
+    const output = await service.execute({ ...input, auth });
 
-      return response.ok({
-        data: output,
-      });
-    } catch {
-      return response.unauthorized({
-        errors: [{ message: "Invalid credentials" }],
-      });
-    }
+    return response.ok({
+      data: output,
+      errors: [],
+    });
   }
 
-  public async create({ request, response }: HttpContextContract) {
+  public async create({ request, response, auth }: HttpContextContract) {
     const service = new UserCreateService();
 
     const input = await request.validate(service.schemaValidator);
 
-    try {
-      await service.execute(input);
+    await service.execute({ ...input, auth });
 
-      return response.created();
-    } catch (err) {
-      if (err.constraint === "users_email_unique") {
-        return response.conflict({
-          errors: [{ message: "Email already in use" }],
-        });
-      }
-    }
+    return response.created({ data: {}, errors: [] });
   }
 
   public async active({ response, auth }: HttpContextContract) {
@@ -49,7 +36,7 @@ export default class UsersController {
 
     await service.execute({ userId: user!.id });
 
-    return response.noContent();
+    return response.ok({ data: {}, errors: [] });
   }
 
   public async sendResetPasswordEmail({
@@ -63,7 +50,7 @@ export default class UsersController {
 
     await service.execute({ ...input, auth });
 
-    return response.noContent();
+    return response.ok({ data: {}, errors: [] });
   }
 
   public async resetPassword({ request, response, auth }: HttpContextContract) {
@@ -73,6 +60,6 @@ export default class UsersController {
 
     await service.execute({ ...input, auth });
 
-    return response.noContent();
+    return response.ok({ data: {}, errors: [] });
   }
 }
