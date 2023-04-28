@@ -13,17 +13,21 @@ export default class UserSendResetPasswordEmailService
   implements IBaseService<Input, Output>
 {
   public async execute({ email, auth }: Input): Promise<Output> {
-    const { password } = await User.findByOrFail("email", email);
+    const user = await User.findByOrFail("email", email);
 
-    const token = await auth.use("api").attempt(email, password, {
+    const { token } = await auth.use("api").generate(user, {
       expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
     });
 
-    const url = `${Env.get(
+    const resetPasswordUrl = `${Env.get(
       "ORGANEZEE_URL"
     )}/auth/reset-password?token=${token}`;
 
-    const html = mjml(View.render("emails/reset-password", { url })).html;
+    const view = await View.render("emails/reset_password", {
+      resetPasswordUrl,
+    });
+
+    const html = mjml(view).html;
 
     await Mail.sendLater((message) => {
       message

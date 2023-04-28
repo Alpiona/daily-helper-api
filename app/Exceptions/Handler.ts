@@ -9,11 +9,16 @@ export default class ExceptionHandler extends HttpExceptionHandler {
   }
 
   public async handle(error: any, ctx: HttpContextContract) {
+    console.log(error);
+    console.log(error.code);
+    console.log(error.status);
+    console.log(error.message);
+
     if (error.code && error.code in ErrorCodesHandler) {
       return ErrorCodesHandler[error.code](ctx, error);
     }
 
-    if (error.name === "Exception") {
+    if (error.name === "Exception" && error.status !== 500) {
       return ctx.response
         .status(error.status)
         .send({ data: {}, errors: [{ message: error.message }] });

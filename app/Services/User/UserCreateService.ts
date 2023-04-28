@@ -13,16 +13,16 @@ import IBaseService from "../IBaseService";
 
 export default class UserCreateService implements IBaseService<Input, Output> {
   public async execute({ email, password, auth }: Input): Promise<Output> {
-    try {
+    const user = await User.findBy("email", email);
+
+    if (!user) {
       await User.create({
         email,
         password,
         status: UserStatus.WAITING_CONFIRMATION,
       });
-    } catch (err) {
-      if (err.constraint === "users_email_unique") {
-        throw new Exception("Email already in use", 409);
-      }
+    } else if (user && user.status !== UserStatus.WAITING_CONFIRMATION) {
+      throw new Exception("Email already in use", 409);
     }
 
     const token = await auth.use("api").attempt(email, password, {
@@ -33,7 +33,7 @@ export default class UserCreateService implements IBaseService<Input, Output> {
       "ORGANEZEE_URL"
     )}/auth/sign-up-confirmation?token=${token.token}`;
 
-    const view = await View.render("emails/reset_password.edge", {
+    const view = await View.render("emails/new_user.edge", {
       confirmationUrl,
     });
 
@@ -43,7 +43,7 @@ export default class UserCreateService implements IBaseService<Input, Output> {
       message
         .from(Env.get("ORGANEZEE_NO_REPLY_EMAIL"))
         .to(email)
-        .subject("Reset Password!")
+        .subject("Organezee Registration Confirmation")
         .html(html);
     });
   }

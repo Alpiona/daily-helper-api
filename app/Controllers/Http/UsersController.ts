@@ -29,8 +29,10 @@ export default class UsersController {
     return response.created({ data: {}, errors: [] });
   }
 
-  public async active({ response, auth }: HttpContextContract) {
+  public async activate({ response, auth }: HttpContextContract) {
     const service = new UserActiveService();
+
+    console.log("chegou");
 
     const user = auth.user;
 

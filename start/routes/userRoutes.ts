@@ -5,11 +5,14 @@ Route.group(() => {
 
   Route.post("/users", "UsersController.create");
 
-  Route.post("/users/send-reset-password", "UsersController.sendResetPassword");
+  Route.post(
+    "/users/send-reset-password",
+    "UsersController.sendResetPasswordEmail"
+  );
 });
 
 Route.group(() => {
-  Route.put("/users/active", "UsersController.active");
+  Route.patch("/users/activate", "UsersController.activate");
 
   Route.post("/users/reset-password", "UsersController.resetPassword");
 }).middleware("auth");
