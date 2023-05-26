@@ -13,7 +13,7 @@ import User from "./User";
 export default class Bill extends AppBaseModel {
   public serializeExtras() {
     return {
-      month_paid: !!this.$extras.month_paid,
+      monthPaid: !!this.$extras.month_paid,
     };
   }
 

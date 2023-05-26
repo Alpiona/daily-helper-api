@@ -32,8 +32,6 @@ export default class UsersController {
   public async activate({ response, auth }: HttpContextContract) {
     const service = new UserActiveService();
 
-    console.log("chegou");
-
     const user = auth.user;
 
     await service.execute({ userId: user!.id });
