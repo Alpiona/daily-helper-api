@@ -9,8 +9,8 @@ export default class UserCreateService implements IBaseService<Input, Output> {
   public async execute({
     email,
     password,
-    auth,
-    locale,
+    auth: _auth,
+    locale: _locale,
   }: Input): Promise<Output> {
     try {
       await User.create({
