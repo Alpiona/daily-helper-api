@@ -19,6 +19,20 @@ export default class UserSendResetPasswordEmailService
       expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
     });
 
+    await this.sendResetPasswordEmail(token, email);
+  }
+
+  public schemaValidator = {
+    schema: schema.create({
+      email: schema.string({}, [rules.email()]),
+    }),
+    messages: DefaultValidatorMessages,
+  };
+
+  private async sendResetPasswordEmail(
+    token: string,
+    email: string
+  ): Promise<void> {
     const resetPasswordUrl = `${Env.get(
       "ORGANEZEE_URL"
     )}/auth/reset-password?token=${token}`;
@@ -37,13 +51,6 @@ export default class UserSendResetPasswordEmailService
         .html(html);
     });
   }
-
-  public schemaValidator = {
-    schema: schema.create({
-      email: schema.string({}, [rules.email()]),
-    }),
-    messages: DefaultValidatorMessages,
-  };
 }
 
 type Input = {

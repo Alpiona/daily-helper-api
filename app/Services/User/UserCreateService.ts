@@ -1,72 +1,72 @@
 import { Exception } from "@adonisjs/core/build/standalone";
 import { AuthContract } from "@ioc:Adonis/Addons/Auth";
+import Mail from "@ioc:Adonis/Addons/Mail";
+import Env from "@ioc:Adonis/Core/Env";
 import { rules, schema } from "@ioc:Adonis/Core/Validator";
+import View from "@ioc:Adonis/Core/View";
+import { ConfigurationValues } from "App/Constants/ConfigurationValues";
 import { DefaultValidatorMessages } from "App/Constants/DefaultValidatorMessages";
+import { UserStatus } from "App/Constants/UserStatus";
 import User from "App/Models/User";
+import mjml from "mjml";
 import IBaseService from "../IBaseService";
 
 export default class UserCreateService implements IBaseService<Input, Output> {
   public async execute({
     email,
     password,
-    auth: _auth,
-    locale: _locale,
+    auth,
+    locale,
   }: Input): Promise<Output> {
-    try {
-      await User.create({
-        email,
-        password,
-        // status: UserStatus.WAITING_CONFIRMATION,
-      });
-    } catch (err) {
-      if (err.constraint === "users_email_unique") {
-        throw new Exception("Email already exists", 409, "E_UNIQUE_EMAIL");
-      }
+    const user = await User.findBy("email", email);
 
-      throw err;
+    if (user && user.status !== UserStatus.WAITING_CONFIRMATION) {
+      throw new Exception("Email already in use", 409, "E_UNIQUE_RESOURCE");
+    } else {
+      await User.updateOrCreate(
+        { email },
+        {
+          email,
+          password,
+          status: UserStatus.WAITING_CONFIRMATION,
+        }
+      );
     }
 
-    // const user = await User.findBy("email", email);
+    const { token } = await auth.use("api").attempt(email, password, {
+      expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
+    });
 
-    // if (!user) {
-    //   await User.create({
-    //     email,
-    //     password,
-    //     status: UserStatus.WAITING_CONFIRMATION,
-    //   });
-    // } else if (user && user.status === UserStatus.WAITING_CONFIRMATION) {
-    //   user.password = password;
-    //   await user.save();
-    // } else if (user && user.status !== UserStatus.WAITING_CONFIRMATION) {
-    //   throw new Exception("Email already in use", 409, "E_UNIQUE_RESOURCE");
-    // }
+    await this.sendEmailForConfirmation(email, token, locale);
+  }
 
-    // const token = await auth.use("api").attempt(email, password, {
-    //   expiresIn: ConfigurationValues.EMAIL_TOKEN_EXPIRATION,
-    // });
+  private async sendEmailForConfirmation(
+    email: string,
+    token: string,
+    locale: string
+  ): Promise<void> {
+    const confirmationUrl = `${Env.get(
+      "ORGANEZEE_URL"
+    )}/auth/sign-up-confirmation?token=${token}`;
 
-    // const confirmationUrl = `${Env.get(
-    //   "ORGANEZEE_URL"
-    // )}/auth/sign-up-confirmation?token=${token.token}`;
+    const view = await View.render(`emails/${locale}/new_user.edge`, {
+      confirmationUrl,
+    });
 
-    // const view = await View.render(`emails/${locale}/new_user.edge`, {
-    //   confirmationUrl,
-    // });
+    const html = mjml(view).html;
 
-    // const html = mjml(view).html;
+    const emailTitle =
+      locale === "en"
+        ? "Organezee - Registration Confirmation"
+        : "Organezee - Confirmação de Registro";
 
-    // const emailTitle =
-    //   locale === "en"
-    //     ? "Organezee - Registration Confirmation"
-    //     : "Organezee - Confirmação de Registro";
-
-    // await Mail.sendLater((message) => {
-    //   message
-    //     .from(Env.get("ORGANEZEE_NO_REPLY_EMAIL"))
-    //     .to(email)
-    //     .subject(emailTitle)
-    //     .html(html);
-    // });
+    await Mail.sendLater((message) => {
+      message
+        .from(Env.get("ORGANEZEE_NO_REPLY_EMAIL"))
+        .to(email)
+        .subject(emailTitle)
+        .html(html);
+    });
   }
 
   public schemaValidator = {
