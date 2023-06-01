@@ -21,7 +21,7 @@ export default class UserCreateService implements IBaseService<Input, Output> {
     const user = await User.findBy("email", email);
 
     if (user && user.status !== UserStatus.WAITING_CONFIRMATION) {
-      throw new Exception("Email already in use", 409, "E_UNIQUE_RESOURCE");
+      throw new Exception("Email already in use", 409, "E_UNIQUE_EMAIL");
     } else {
       await User.updateOrCreate(
         { email },

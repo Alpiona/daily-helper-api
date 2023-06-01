@@ -5,7 +5,7 @@ coverage
 .DS_STORE
 .env
 tmp
-*.http
+api.http
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

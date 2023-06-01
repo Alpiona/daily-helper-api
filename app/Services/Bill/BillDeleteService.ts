@@ -7,7 +7,7 @@ export default class BillDeleteService implements IBaseService<Input, Output> {
   public async execute({ params: { billId }, userId }: Input): Promise<Output> {
     const bill = await Bill.query()
       .where("userId", userId)
-      .andWhere("billId", billId)
+      .andWhere("id", billId)
       .first();
 
     if (!bill) {
