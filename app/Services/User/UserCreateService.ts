@@ -60,13 +60,15 @@ export default class UserCreateService implements IBaseService<Input, Output> {
         ? "Organezee - Registration Confirmation"
         : "Organezee - Confirmação de Registro";
 
-    await Mail.sendLater((message) => {
+    const response = await Mail.send((message) => {
       message
         .from(Env.get("ORGANEZEE_NO_REPLY_EMAIL"))
         .to(email)
         .subject(emailTitle)
         .html(html);
     });
+
+    console.log(response);
   }
 
   public schemaValidator = {

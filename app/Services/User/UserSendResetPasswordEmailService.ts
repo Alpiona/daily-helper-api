@@ -43,13 +43,15 @@ export default class UserSendResetPasswordEmailService
 
     const html = mjml(view).html;
 
-    await Mail.sendLater((message) => {
+    const response = await Mail.send((message) => {
       message
         .from(Env.get("ORGANEZEE_NO_REPLY_EMAIL"))
         .to(email)
         .subject("Reset Password!")
         .html(html);
     });
+
+    console.log(response);
   }
 }
 
